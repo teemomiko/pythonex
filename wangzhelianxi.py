@@ -48,4 +48,5 @@ for h in hero_list_info.json():
         with open(f'{cname}/{name}.jpg', 'wb') as f:
             # print(type(image_url_resp))
             f.write(image_url_resp.content)
+            # save images into  folder 
         print(f'{name} download  succeed')
