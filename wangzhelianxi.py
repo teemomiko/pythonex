@@ -50,3 +50,45 @@ for h in hero_list_info.json():
             f.write(image_url_resp.content)
             # save images into  folder 
         print(f'{name} download  succeed')
+
+
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import TimeoutException, NoSuchElementException
+from lxml import etree
+
+options = webdriver.ChromeOptions()
+options.add_argument("headless")
+
+driver = webdriver.Chrome(options=options)
+
+url = "https://zoom.us/zh-cn/download#client_4meeting"
+driver.get(url)
+
+try:
+    element_present = EC.presence_of_element_located((By.XPATH, '//a[@class="download-btn-lk zm-button--primary zm-button--large zm-button is-link"]'))
+    WebDriverWait(driver, 10).until(element_present)
+
+    tree = etree.HTML(driver.page_source)
+    download_link = tree.xpath('//a[@class="download-btn-lk zm-button--primary zm-button--large zm-button is-link"]/@href')
+    
+    if download_link:
+        print(download_link[0])
+    else:
+        print("Download link not found")
+
+except TimeoutException:
+    print("Timed out waiting for page to load")
+
+except NoSuchElementException as nse:
+    print("Element not found:", nse)
+
+except Exception as e:
+    print("Error occurred:", e)
+
+finally:
+    driver.quit()
+
