@@ -92,3 +92,47 @@ except Exception as e:
 finally:
     driver.quit()
 
+import requests
+
+
+headers = {
+    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/107.0.0.0 Safari/537.36'}
+hero_list_url = 'https://pvp.qq.com/web201605/js/herolist.json'
+hero_list_info = requests.get(hero_list_url, headers=headers)
+
+url = "https://meeting.tencent.com/web-service/query-download-info"
+
+# 构建请求参数
+params = {
+    'q': '[{"package-type":"app","channel":"0300000000","platform":"windows"}]',
+    'nonce': 'YPrpAeHSn8NKBKid',
+    'c_os': 'web',
+    'c_os_version': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36',
+    # 'c_os_model': 'web',
+    # 'c_timestamp': '1701698380487',
+    'c_instance_id': '5',
+    # 'c_nonce': 'yErj4ry4b',
+    # 'c_app_uid': 'false',
+    # 'c_app_id': 'false',
+    # 'c_app_version': '',
+    # 'c_lang': 'zh-cn',
+    # 'c_district': '0',
+    # 'c_platform': '0',
+    # 'c_token': '',
+    # 'trace-id': 'ec69e69d2fee30b8b64c954e2f0a4cb1',
+}
+
+# 发送 GET 请求
+response = requests.get(url, params=params)
+
+download_url = response.json()["info-list"][0]['url']
+# print("Download url is f'{download_url}'")
+# 打印响应内容
+download_url_resp = requests.get(download_url, headers=headers)
+name = 'zoom.exe'
+# print(name)
+with open(f'{name}', 'wb') as f:
+    # print(type(image_url_resp))
+    f.write(download_url_resp.content)
+
+print(f'{name} download  succeed')
